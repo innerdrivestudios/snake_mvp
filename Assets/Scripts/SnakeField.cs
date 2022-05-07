@@ -47,11 +47,11 @@ public class SnakeField
         }
     }
 
-    public void Store (Vector2Int gridPosition, GameObject pGameObject)
+    public void Store (Vector2Int gridPosition, GameObject gameObj)
     {
         if (IsInside(gridPosition))
 		{
-            _grid[gridPosition.x, gridPosition.y] = pGameObject;
+            _grid[gridPosition.x, gridPosition.y] = gameObj;
 		}
     }
 
