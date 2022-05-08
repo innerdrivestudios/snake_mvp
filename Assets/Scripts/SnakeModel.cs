@@ -15,9 +15,27 @@ public class SnakeModel
         _snake.AddLast(bodyPartPosition);
 	}
 
-    public void Move (Vector2Int direction)
+    public void Move(Vector2Int direction, bool grow)
 	{
-        First.Value = First.Value + direction;
+        //initialize for iteration over all body parts
+        Vector2Int nextPartPosition = First.Value + direction;
+        LinkedListNode<Vector2Int> snakePart = First;
+
+        //iterate over all body parts shifting them to where their predecessor was
+        while (snakePart != null)
+		{
+            Vector2Int currentPartPosition = snakePart.Value;
+            snakePart.Value = nextPartPosition;
+            
+            nextPartPosition = currentPartPosition;
+            snakePart = snakePart.Next;
+		}
+
+        //extend if required
+        if (grow)
+		{
+            AddPart(nextPartPosition);
+		}
 	}
    
 }

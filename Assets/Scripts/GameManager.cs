@@ -39,7 +39,15 @@ public class GameManager : MonoBehaviour
         _snakeField = new SnakeField(_width, _height);
         
         _snakeModel = new SnakeModel();
-        _snakeModel.AddPart(new Vector2Int(_width >> 1, _height >> 1));
+
+        Vector2Int headPosition = new Vector2Int(_width >> 1, _height >> 1);
+
+        for (int i = 0; i < 5; i++)
+		{
+            _snakeModel.AddPart(headPosition);
+            headPosition += _snakeDirections[(int)SnakeDirection.DOWN];
+		}
+
     }
 
 	private IEnumerator Start()
@@ -50,7 +58,7 @@ public class GameManager : MonoBehaviour
 
             if (_directionSet)
 			{
-                _snakeModel.Move(_snakeDirections[(int)_inputDirection]);
+                _snakeModel.Move(_snakeDirections[(int)_inputDirection], Random.value < 0.1f);
                 _lastMovedDirection = _inputDirection;
                 _snakeMoving = true;
 
