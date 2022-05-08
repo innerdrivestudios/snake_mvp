@@ -12,9 +12,14 @@ public class GameManager : MonoBehaviour
     //Define a matching direction array that gives us the actual direction vectors matching the directions above
     private Vector2Int[] _snakeDirections = { new Vector2Int(1, 0), new Vector2Int(0, 1), new Vector2Int(-1, 0), new Vector2Int(0, -1) };
 
+    [Header ("Playing field settings")]
     //Define the playing field size
 	[SerializeField] private int _width;
     [SerializeField] private int _height;
+
+    [Header("Game play settings")]
+    [Range(0.1f, 1)]
+    [SerializeField] private float _stepDelay = 1;
 
     //Helper grid for spatial partitioning so that we can get quickly detect pickups or collisions
     private SnakeField _snakeField;     
@@ -41,17 +46,30 @@ public class GameManager : MonoBehaviour
 	{
 		while (Application.isPlaying)
 		{
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(_stepDelay);
 
             if (_directionSet)
 			{
-                //We are not moving the snake yet, just implementing the input and direction mechanism
-                //_snakeModel.Move(_snakeDirections[(int)_inputDirection]);
+                _snakeModel.Move(_snakeDirections[(int)_inputDirection]);
                 _lastMovedDirection = _inputDirection;
                 _snakeMoving = true;
+
+                if (checkGameOver())
+				{
+                    Debug.Log("Game over");
+                    break;
+				}
 			}
 		}
+
+        Debug.Log("Game loop ended");
 	}
+
+    private bool checkGameOver()
+	{
+        return !_snakeField.IsInside(_snakeModel.First.Value);
+	}
+
 
     /**
      * Specifies a direction the user would like to move in. 

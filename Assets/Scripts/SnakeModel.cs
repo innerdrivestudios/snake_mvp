@@ -14,5 +14,10 @@ public class SnakeModel
 	{
         _snake.AddLast(bodyPartPosition);
 	}
-    
+
+    public void Move (Vector2Int direction)
+	{
+        First.Value = First.Value + direction;
+	}
+   
 }
