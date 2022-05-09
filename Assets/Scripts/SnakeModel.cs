@@ -60,4 +60,10 @@ public class SnakeModel
         return FirstPart.Value + direction;
     }
 
+    public bool IsNextHeadPositionValid (Vector2Int direction)
+	{
+        Vector2Int nextHeadPosition = GetNextHeadPositionFor(direction);
+        return _snakeField.IsInside(nextHeadPosition) && _snakeField.GetContents(nextHeadPosition) != this;
+    }
+
 }
