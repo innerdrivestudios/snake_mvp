@@ -334,6 +334,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _width: 40
   _height: 30
+  _stepDelay: 1
+  renderGizmos: 1
+  renderDirectionPreview: 0
 --- !u!4 &2028106614
 Transform:
   m_ObjectHideFlags: 0

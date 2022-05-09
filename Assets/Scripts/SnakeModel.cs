@@ -54,4 +54,10 @@ public class SnakeModel
             _snakeField.Clear(nextPartPosition);
 		}
 	}
+
+    public Vector2Int GetNextHeadPositionFor(Vector2Int direction)
+    {
+        return FirstPart.Value + direction;
+    }
+
 }

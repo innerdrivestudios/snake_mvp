@@ -21,13 +21,18 @@ public class GameManager : MonoBehaviour
     [Range(0.1f, 1)]
     [SerializeField] private float _stepDelay = 1;
 
+    [Header("Debug settings")]
+    [SerializeField] bool renderGizmos = true;
+    [SerializeField] bool renderDirectionPreview = true;
+
     //Helper grid for spatial partitioning so that we can get quickly detect pickups or collisions
     private SnakeField _snakeField;     
     //Defines all the parts of the snake
     private SnakeModel _snakeModel;
 
-    //In snake there is a difference between the direction we are moving in (lastMovedDirection) and the direction we want to move in (inputDirection)
-    //Which inputDirections are allowed depends on the lastMovedDirection
+    //In snake there is a difference between the direction we are moving in (lastMovedDirection)
+    //and the direction we want to move in (inputDirection)
+    //Which inputDirection is allowed depends on the lastMovedDirection
     private SnakeDirection _inputDirection;
     private SnakeDirection _lastMovedDirection;
 
@@ -37,7 +42,6 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         _snakeField = new SnakeField(_width, _height);
-        
         _snakeModel = new SnakeModel(_snakeField);
 
         Vector2Int headPosition = new Vector2Int(_width >> 1, _height >> 1);
@@ -47,7 +51,6 @@ public class GameManager : MonoBehaviour
             _snakeModel.AddPart(headPosition);
             headPosition += _snakeDirections[(int)SnakeDirection.DOWN];
 		}
-
     }
 
 	private IEnumerator Start()
@@ -56,28 +59,33 @@ public class GameManager : MonoBehaviour
 		{
             yield return new WaitForSeconds(_stepDelay);
 
-            if (_directionSet)
-			{
-                _snakeModel.Move(_snakeDirections[(int)_inputDirection], Random.value < 0.3f);
-                _lastMovedDirection = _inputDirection;
-                _snakeMoving = true;
+            //as long as no direction has been set we skip the game loop
+            if (!_directionSet) continue;
 
-                if (checkGameOver())
-				{
-                    Debug.Log("Game over");
-                    break;
-				}
+            //check if we can move to the new position or if we are going to hit an invalid position
+            Vector2Int direction = _snakeDirections[(int)_inputDirection];
+            Vector2Int newHeadPosition = _snakeModel.GetNextHeadPositionFor(direction);
+
+            //check if the new position is a valid position, do this before we move otherwise the snake will occupy the 
+            //newHeadPosition and the valid check will always return false
+            bool validPosition = _snakeField.IsInside(newHeadPosition) && _snakeField.GetContents(newHeadPosition) == null;
+
+            //Move whether we are valid or not (we want to see the accident happen :))
+            _snakeModel.Move(direction, Random.value < 0.3f);
+            //store the fact that we actually moved in this direction, so new input directions might become valid
+            _lastMovedDirection = _inputDirection;
+            //mark the snake as moving after the first time we've moved for real (and keep setting it for no reason after that)
+            _snakeMoving = true;
+
+            if (!validPosition)
+			{
+                Debug.Log("Game over");
+                break;
 			}
 		}
 
         Debug.Log("Game loop ended");
 	}
-
-    private bool checkGameOver()
-	{
-        return !_snakeField.IsInside(_snakeModel.FirstPart.Value);
-	}
-
 
     /**
      * Specifies a direction the user would like to move in. 
@@ -98,6 +106,7 @@ public class GameManager : MonoBehaviour
     private void OnDrawGizmos()
     {
         if (_snakeField == null) return;
+        if (!renderGizmos) return;
 
         Vector3 worldPosition;
 
@@ -116,17 +125,20 @@ public class GameManager : MonoBehaviour
 
         LinkedListNode<Vector2Int> snakeElement = _snakeModel.FirstPart;
 
-        //draw where we want to go
-        Gizmos.color = Color.cyan;
-        Vector2Int inputDirection = _snakeDirections[(int)_inputDirection];
-        worldPosition = new Vector3(snakeElement.Value.x + inputDirection.x, snakeElement.Value.y + inputDirection.y, 0) + transform.position;
-        Gizmos.DrawCube(worldPosition, new Vector3(0.9f, 0.9f, 0.1f));
+        if (renderDirectionPreview)
+        {
+            //draw where we want to go
+            Gizmos.color = Color.cyan;
+            Vector2Int inputDirection = _snakeDirections[(int)_inputDirection];
+            worldPosition = new Vector3(snakeElement.Value.x + inputDirection.x, snakeElement.Value.y + inputDirection.y, 0) + transform.position;
+            Gizmos.DrawCube(worldPosition, new Vector3(0.9f, 0.9f, 0.1f));
 
-        //draw where we are headed
-        Gizmos.color = Color.magenta;
-        Vector2Int lastMovedDirection = _snakeDirections[(int)_lastMovedDirection];
-        worldPosition = new Vector3(snakeElement.Value.x + lastMovedDirection.x, snakeElement.Value.y + lastMovedDirection.y, 0) + transform.position;
-        Gizmos.DrawCube(worldPosition, new Vector3(0.9f, 0.9f, 0.1f));
+            //draw where we are headed
+            Gizmos.color = Color.magenta;
+            Vector2Int lastMovedDirection = _snakeDirections[(int)_lastMovedDirection];
+            worldPosition = new Vector3(snakeElement.Value.x + lastMovedDirection.x, snakeElement.Value.y + lastMovedDirection.y, 0) + transform.position;
+            Gizmos.DrawCube(worldPosition, new Vector3(0.9f, 0.9f, 0.1f));
+        }
 
         //draw snake body
         Gizmos.color = new Color(0, 0, 1, 0.3f);
@@ -136,15 +148,5 @@ public class GameManager : MonoBehaviour
             snakeElement = snakeElement.Next;
         }
     }
-
-    /*
-	private void Update()
-	{
-		if (Input.GetKeyDown(KeyCode.Space))
-		{
-            snakeModel.AddPart(snakeField.GetRandomLocation());
-		}
-	}
-    */
 
 }
