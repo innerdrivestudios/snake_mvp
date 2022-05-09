@@ -10,8 +10,8 @@ public class SnakeField
     //cache width and height to avoid GetLength(0) and GetLength(1) all the time.
     private int _width = 0;
     private int _height = 0;
-    //grid that contains reference to all gameobjects in the grid
-    private GameObject[,] _grid;
+    //grid that contains reference to all objects in the grid, can be anything
+    private object[,] _grid;
 
     public SnakeField (int width, int height)
 	{
@@ -19,11 +19,10 @@ public class SnakeField
 
         _width = width;
         _height = height;
-		_grid = new GameObject[_width, _height];
-        
+		_grid = new object[_width, _height];
     }
 
-    public GameObject GetContents(Vector2Int gridPosition)
+    public object GetContents(Vector2Int gridPosition)
     {
         if (IsInside(gridPosition))
         {
@@ -47,11 +46,11 @@ public class SnakeField
         }
     }
 
-    public void Store (Vector2Int gridPosition, GameObject gameObj)
+    public void Store (Vector2Int gridPosition, object obj)
     {
         if (IsInside(gridPosition))
 		{
-            _grid[gridPosition.x, gridPosition.y] = gameObj;
+           _grid[gridPosition.x, gridPosition.y] = obj;
 		}
     }
 

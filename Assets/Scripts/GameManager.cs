@@ -38,7 +38,7 @@ public class GameManager : MonoBehaviour
     {
         _snakeField = new SnakeField(_width, _height);
         
-        _snakeModel = new SnakeModel();
+        _snakeModel = new SnakeModel(_snakeField);
 
         Vector2Int headPosition = new Vector2Int(_width >> 1, _height >> 1);
 
@@ -58,7 +58,7 @@ public class GameManager : MonoBehaviour
 
             if (_directionSet)
 			{
-                _snakeModel.Move(_snakeDirections[(int)_inputDirection], Random.value < 0.1f);
+                _snakeModel.Move(_snakeDirections[(int)_inputDirection], Random.value < 0.3f);
                 _lastMovedDirection = _inputDirection;
                 _snakeMoving = true;
 
@@ -75,7 +75,7 @@ public class GameManager : MonoBehaviour
 
     private bool checkGameOver()
 	{
-        return !_snakeField.IsInside(_snakeModel.First.Value);
+        return !_snakeField.IsInside(_snakeModel.FirstPart.Value);
 	}
 
 
@@ -114,7 +114,7 @@ public class GameManager : MonoBehaviour
 
         if (_snakeModel == null) return;
 
-        LinkedListNode<Vector2Int> snakeElement = _snakeModel.First;
+        LinkedListNode<Vector2Int> snakeElement = _snakeModel.FirstPart;
 
         //draw where we want to go
         Gizmos.color = Color.cyan;
@@ -129,7 +129,7 @@ public class GameManager : MonoBehaviour
         Gizmos.DrawCube(worldPosition, new Vector3(0.9f, 0.9f, 0.1f));
 
         //draw snake body
-        Gizmos.color = Color.blue;
+        Gizmos.color = new Color(0, 0, 1, 0.3f);
         while (snakeElement != null) {
             worldPosition = new Vector3(snakeElement.Value.x, snakeElement.Value.y, 0) + transform.position;
             Gizmos.DrawCube(worldPosition, new Vector3(0.9f, 0.9f, 0.1f));
