@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 193306753963114617}
   - component: {fileID: 4031320772055322249}
   m_Layer: 0
-  m_Name: Pickup
+  m_Name: Apple
   m_TagString: Pickup
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

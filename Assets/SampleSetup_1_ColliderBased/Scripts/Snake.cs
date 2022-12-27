@@ -16,12 +16,12 @@ namespace SampleSetup_1_ColliderBased
         public Transform NextPositionIndicator;
 
         //prefab to spawn every now and then which will make the snake grow when eaten
-        public GameObject ApplePrefab;
+        public Transform ApplePrefab;
         //spawn rate in seconds
         public float AppleSpawnDelay;
 
         //prefab to spawn at the end of the snake to make it grow when it eats an apple
-        public GameObject SnakePartPrefab;
+        public Transform SnakePartPrefab;
         //pause between moves 
         public float SnakeUpdateDelay;
 
@@ -158,8 +158,8 @@ namespace SampleSetup_1_ColliderBased
             if (other.CompareTag("Pickup"))
 			{
                 Destroy(other.gameObject);
-                GameObject newSnakePart = Instantiate(SnakePartPrefab, lastTailPosition, Quaternion.identity);
-                snakeParts.Add(newSnakePart.transform);
+                Transform newSnakePart = Instantiate(SnakePartPrefab, lastTailPosition, Quaternion.identity);
+                snakeParts.Add(newSnakePart);
 
                 //if you'd want to update any points, do it here ;)
             }

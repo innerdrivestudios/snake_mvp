@@ -382,10 +382,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   NextPositionIndicator: {fileID: 633924203}
-  ApplePrefab: {fileID: 7203932461503172512, guid: 0886856e207864846b047b2483a92ae5,
+  ApplePrefab: {fileID: 3968734835394535985, guid: 0886856e207864846b047b2483a92ae5,
     type: 3}
   AppleSpawnDelay: 5
-  SnakePartPrefab: {fileID: 4163522339249917296, guid: cd507296cc17c33458000275ab5453bb,
+  SnakePartPrefab: {fileID: 6997391723875821595, guid: cd507296cc17c33458000275ab5453bb,
     type: 3}
   SnakeUpdateDelay: 0.2
   AppleSpawnXRange: {x: -18, y: 18}
