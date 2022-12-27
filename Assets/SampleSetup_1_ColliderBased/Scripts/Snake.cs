@@ -47,6 +47,9 @@ namespace SampleSetup_1_ColliderBased
             currentDirection.Normalize();
             newDirection = currentDirection;
 
+            //make sure we are on whole positions to start with
+            transform.SnapToGrid(1);
+
             //make sure the head is also a snake part to update
             snakeParts.Add(transform);
 
