@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public static class TransformExtensions 
+public static class TransformExtensions
 {
     public static void SnapToGrid(this Transform transform, float pGridSize)
     {

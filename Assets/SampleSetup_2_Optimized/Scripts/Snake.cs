@@ -58,7 +58,6 @@ namespace SampleSetup_2_Optimized
 
             AppleSpawnDelayWFS = new WaitForSeconds(AppleSpawnDelay);
             StartCoroutine(spawnApples());
-
         }
 
         private IEnumerator snakeUpdate()
@@ -122,7 +121,7 @@ namespace SampleSetup_2_Optimized
             NextPositionIndicator.position = newHeadPosition + newDirection;
             currentDirection = newDirection;
 
-            //if we ate something else then our own tail
+            //if we ate something else than our own tail
             if (contents != null)
             {
                 SnakeField.Clear(contents);

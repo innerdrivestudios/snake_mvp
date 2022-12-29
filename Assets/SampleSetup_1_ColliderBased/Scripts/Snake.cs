@@ -64,8 +64,6 @@ namespace SampleSetup_1_ColliderBased
                 yield return new WaitForSeconds(SnakeUpdateDelay);
                 moveSnake();
             }
-            Debug.Log("Game over");
-            StopAllCoroutines();
         }
 
         private IEnumerator spawnApples()
@@ -116,7 +114,11 @@ namespace SampleSetup_1_ColliderBased
 
         private void Update()
         {
-            if (gameOver) return;
+            if (gameOver)
+            {
+                enabled = false;
+                return;
+            }
 
             if (Input.GetKey(KeyCode.UpArrow))
             {
@@ -151,6 +153,7 @@ namespace SampleSetup_1_ColliderBased
             if (other.CompareTag("SnakePart") || other.CompareTag("Boundary"))
 			{
                 gameOver = true;
+                Debug.Log("Game Over");
                 StopAllCoroutines();
                 return;
 			}
