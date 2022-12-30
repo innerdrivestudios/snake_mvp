@@ -12,24 +12,24 @@ namespace SampleSetup_2_Optimized
     public class Snake : MonoBehaviour
     {
         //used for initial direction of the snake and possible as an indicator (if it is not disabled)
-        public Transform NextPositionIndicator;
+        public Transform nextPositionIndicator;
 
         //reference to the snakefield so that we know where we are and where everything else is
-        public SnakeField SnakeField;
+        public SnakeField snakeField;
 
         //prefab to spawn every now and then which will make the snake grow when eaten
-        public Transform ApplePrefab;
+        public Transform applePrefab;
         //spawn rate in seconds
-        public float AppleSpawnDelay;
+        public float appleSpawnDelay;
         //cached wait for second for the apple spawn
-        private WaitForSeconds AppleSpawnDelayWFS;
+        private WaitForSeconds appleSpawnDelayWFS;
 
         //prefab to spawn at the end of the snake to make it grow when it eats an apple
-        public Transform SnakePartPrefab;
+        public Transform snakePartPrefab;
         //pause between moves 
-        public float SnakeUpdateDelay;
+        public float snakeUpdateDelay;
         //cached wait for second for the snake
-        private WaitForSeconds SnakeUpdateDelayWFS;
+        private WaitForSeconds snakeUpdateDelayWFS;
 
         private Vector3 currentDirection;
         private Vector3 newDirection;
@@ -43,7 +43,7 @@ namespace SampleSetup_2_Optimized
         void Awake()
         {
             //get the initial direction
-            currentDirection = NextPositionIndicator.transform.position - transform.position;
+            currentDirection = nextPositionIndicator.transform.position - transform.position;
             currentDirection.Normalize();
             newDirection = currentDirection;
 
@@ -53,21 +53,21 @@ namespace SampleSetup_2_Optimized
             //make sure the head is also a snake part to update
             snakeParts.Add(transform);
 
-            SnakeUpdateDelayWFS = new WaitForSeconds(SnakeUpdateDelay);
-            StartCoroutine(snakeUpdate());
+            snakeUpdateDelayWFS = new WaitForSeconds(snakeUpdateDelay);
+            StartCoroutine(SnakeUpdate());
 
-            AppleSpawnDelayWFS = new WaitForSeconds(AppleSpawnDelay);
-            StartCoroutine(spawnApples());
+            appleSpawnDelayWFS = new WaitForSeconds(appleSpawnDelay);
+            StartCoroutine(SpawnApples());
         }
 
-        private IEnumerator snakeUpdate()
+        private IEnumerator SnakeUpdate()
         {
             while (true)
             {
-                yield return SnakeUpdateDelayWFS;
+                yield return snakeUpdateDelayWFS;
 
                 //could we move or did we crash into a boundary or ourselves?
-                if (!moveSnake())
+                if (!MoveSnake())
                 {
                     Debug.Log("Game over");
                     gameOver = true;
@@ -77,24 +77,24 @@ namespace SampleSetup_2_Optimized
             }
         }
 
-        private IEnumerator spawnApples()
+        private IEnumerator SpawnApples()
         {
             while (!gameOver)
             {
-                yield return AppleSpawnDelayWFS;
-                spawnApple();
+                yield return appleSpawnDelayWFS;
+                SpawnApple();
             }
         }
 
-        private bool moveSnake()
+        private bool MoveSnake()
         {
             Vector3 newHeadPosition = transform.position + newDirection;
 
             //went outside?
-            if (!SnakeField.IsInside(newHeadPosition)) return false;
+            if (!snakeField.IsInside(newHeadPosition)) return false;
 
             //bit own tail?
-            Transform contents = SnakeField.GetContents(newHeadPosition);
+            Transform contents = snakeField.GetContents(newHeadPosition);
             if (contents != null && contents.CompareTag("SnakePart"))
             {
                 return false;
@@ -103,46 +103,46 @@ namespace SampleSetup_2_Optimized
             //store the tail position in case we need to grow, before we move the head
             Transform tail = snakeParts.Last();
             Vector3 lastTailPosition = tail.position;
-            SnakeField.Clear(tail);
+            snakeField.Clear(tail);
 
             //move all elements of the snake from back to front to the position of the element in front of it
             //except the head (note the i > 0) since it has no predecessor
             for (int i = snakeParts.Count - 1; i > 0; i--)
             {
                 snakeParts[i].position = snakeParts[i - 1].position;
-                SnakeField.Store(snakeParts[i]);
+                snakeField.Store(snakeParts[i]);
             }
             
             //now update head:
             transform.position = newHeadPosition;
-            SnakeField.Store(transform);
+            snakeField.Store(transform);
 
             //and the rest of the administration
-            NextPositionIndicator.position = newHeadPosition + newDirection;
+            nextPositionIndicator.position = newHeadPosition + newDirection;
             currentDirection = newDirection;
 
             //if we ate something else than our own tail
             if (contents != null)
             {
-                SnakeField.Clear(contents);
+                snakeField.Clear(contents);
                 Destroy(contents.gameObject);
 
                 //spawn new tail
-                Transform newTail = Instantiate(SnakePartPrefab, lastTailPosition, Quaternion.identity);
+                Transform newTail = Instantiate(snakePartPrefab, lastTailPosition, Quaternion.identity);
                 snakeParts.Add(newTail);
-                SnakeField.Store(newTail);
+                snakeField.Store(newTail);
             }
             
             return true;
         }
 
-        private void spawnApple()
+        private void SpawnApple()
         {
-            Vector3 randomWorldPosition = SnakeField.GetRandomWorldPosition();
-            if (SnakeField.GetContents(randomWorldPosition) == null)
+            Vector3 randomWorldPosition = snakeField.GetRandomWorldPosition();
+            if (snakeField.GetContents(randomWorldPosition) == null)
             {
-                Transform pickup = Instantiate(ApplePrefab, randomWorldPosition, Quaternion.identity);
-                SnakeField.Store(pickup);
+                Transform pickup = Instantiate(applePrefab, randomWorldPosition, Quaternion.identity);
+                snakeField.Store(pickup);
             }
         }
 
@@ -169,7 +169,7 @@ namespace SampleSetup_2_Optimized
 
             if (Vector3.Dot(currentDirection, newDirection) > -0.5f)
             {
-                NextPositionIndicator.position = transform.position + newDirection;
+                nextPositionIndicator.position = transform.position + newDirection;
             }
             else
             {

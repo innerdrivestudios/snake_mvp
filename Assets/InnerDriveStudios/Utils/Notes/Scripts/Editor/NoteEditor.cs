@@ -11,35 +11,34 @@ namespace InnerDriveStudios.Util
     [CustomEditor(typeof(Note))]
     public class NoteEditor : Editor
     {
+        private static readonly GUILayoutOption[] TEXT_AREA_OPTIONS = {
+            GUILayout.ExpandWidth (true),
+            GUILayout.ExpandHeight(false)
+        };
 
-        private static bool _backgroundTexturesInitialized = false;
-        private static string[] _descriptions = { "Documentation", "Todo", "Nice to have", "Minor bug", "Critical bug" };
-        private static Color[] _colors = {
-        new Color(1, 1, 0.4f),
-        new Color(1, 0.75f, 0.3f),
-        new Color(1, 0.5f, 0.2f),
-        new Color(1, 0.25f, 0.1f),
-        new Color(1, 0, 0)
-    };
+        private static readonly string[] DESCRIPTIONS = { "Documentation", "Todo", "Nice to have", "Minor bug", "Critical bug" };
+        private static readonly Color[] COLORS = {
+            new Color(1, 1, 0.4f),
+            new Color(1, 0.75f, 0.3f),
+            new Color(1, 0.5f, 0.2f),
+            new Color(1, 0.25f, 0.1f),
+            new Color(1, 0, 0)
+        };
 
-        private static GUIStyle[] _noteStyles = null;
+        private static GUIStyle[] noteStyles = null;
+        private static bool backgroundTexturesInitialized = false;
 
-        private static GUILayoutOption[] TEXT_AREA_OPTIONS = {
-        GUILayout.ExpandWidth (true),
-        GUILayout.ExpandHeight(false)
-    };
-
-        static void generateBackgroundTexturesForDescriptions()
+        private static void GenerateBackgroundTexturesForDescriptions()
         {
-            if (_backgroundTexturesInitialized) return;
+            if (backgroundTexturesInitialized) return;
 
-            _noteStyles = new GUIStyle[_descriptions.Length];
-            _noteStyles = new GUIStyle[_descriptions.Length];
+            noteStyles = new GUIStyle[DESCRIPTIONS.Length];
+            noteStyles = new GUIStyle[DESCRIPTIONS.Length];
 
-            for (int i = 0; i < _descriptions.Length; i++)
+            for (int i = 0; i < DESCRIPTIONS.Length; i++)
             {
                 Texture2D texture = new Texture2D(1, 1);
-                texture.SetPixel(0, 0, _colors[i]);
+                texture.SetPixel(0, 0, COLORS[i]);
                 texture.Apply();
 
                 GUIStyle style = new GUIStyle();
@@ -49,7 +48,7 @@ namespace InnerDriveStudios.Util
                 style.padding = new RectOffset(5, 5, 5, 5);
                 style.margin = new RectOffset(5, 5, 5, 5);
 
-                _noteStyles[i] = style;
+                noteStyles[i] = style;
             }
         }
 
@@ -58,7 +57,7 @@ namespace InnerDriveStudios.Util
 
         private void OnEnable()
         {
-            generateBackgroundTexturesForDescriptions();
+            GenerateBackgroundTexturesForDescriptions();
 
             noteType = serializedObject.FindProperty("noteType");
             noteText = serializedObject.FindProperty("noteText");
@@ -68,8 +67,8 @@ namespace InnerDriveStudios.Util
         {
             serializedObject.Update();
 
-            noteType.intValue = EditorGUILayout.Popup(noteType.intValue, _descriptions);
-            noteText.stringValue = EditorGUILayout.TextArea(noteText.stringValue, _noteStyles[noteType.intValue], TEXT_AREA_OPTIONS);
+            noteType.intValue = EditorGUILayout.Popup(noteType.intValue, DESCRIPTIONS);
+            noteText.stringValue = EditorGUILayout.TextArea(noteText.stringValue, noteStyles[noteType.intValue], TEXT_AREA_OPTIONS);
 
             serializedObject.ApplyModifiedProperties();
         }

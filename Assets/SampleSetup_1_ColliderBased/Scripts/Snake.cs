@@ -13,20 +13,20 @@ namespace SampleSetup_1_ColliderBased
     public class Snake : MonoBehaviour
     {
         //used for initial direction of the snake and possible as an indicator (if it is not disabled)
-        public Transform NextPositionIndicator;
+        public Transform nextPositionIndicator;
 
         //prefab to spawn every now and then which will make the snake grow when eaten
-        public Transform ApplePrefab;
+        public Transform applePrefab;
         //spawn rate in seconds
-        public float AppleSpawnDelay;
+        public float appleSpawnDelay;
 
         //prefab to spawn at the end of the snake to make it grow when it eats an apple
-        public Transform SnakePartPrefab;
+        public Transform snakePartPrefab;
         //pause between moves 
-        public float SnakeUpdateDelay;
+        public float snakeUpdateDelay;
 
-        public Vector2 AppleSpawnXRange;
-        public Vector2 AppleSpawnYRange;
+        public Vector2 appleSpawnXRange;
+        public Vector2 appleSpawnYRange;
 
         //currentDirection and newDirection are stored separately to make sure the snake doesn't turn back on itself
         private Vector3 currentDirection;
@@ -43,7 +43,7 @@ namespace SampleSetup_1_ColliderBased
         void Awake()
         {
             //get the initial direction
-            currentDirection = NextPositionIndicator.transform.position - transform.position;
+            currentDirection = nextPositionIndicator.transform.position - transform.position;
             currentDirection.Normalize();
             newDirection = currentDirection;
 
@@ -53,29 +53,29 @@ namespace SampleSetup_1_ColliderBased
             //make sure the head is also a snake part to update
             snakeParts.Add(transform);
 
-            StartCoroutine(snakeUpdate());
-            StartCoroutine(spawnApples());
+            StartCoroutine(SnakeUpdate());
+            StartCoroutine(SpawnApples());
         }
 
-        private IEnumerator snakeUpdate()
+        private IEnumerator SnakeUpdate()
         {
             while (!gameOver)
             {
-                yield return new WaitForSeconds(SnakeUpdateDelay);
-                moveSnake();
+                yield return new WaitForSeconds(snakeUpdateDelay);
+                MoveSnake();
             }
         }
 
-        private IEnumerator spawnApples()
+        private IEnumerator SpawnApples()
         {
             while (!gameOver)
             {
-                yield return new WaitForSeconds(AppleSpawnDelay);
-                spawnApple();
+                yield return new WaitForSeconds(appleSpawnDelay);
+                SpawnApple();
             }
         }
 
-        private void moveSnake()
+        private void MoveSnake()
         {
             //use position, in case the NextIndicator is not a child of the head
             Vector3 newHeadPosition = transform.position + newDirection;
@@ -92,23 +92,23 @@ namespace SampleSetup_1_ColliderBased
             transform.position = newHeadPosition;
             
             //and the rest of the administration
-            NextPositionIndicator.position = newHeadPosition + newDirection;
+            nextPositionIndicator.position = newHeadPosition + newDirection;
             currentDirection = newDirection;
         }
 
-        private void spawnApple()
+        private void SpawnApple()
         {
             Vector3 randomAppleSpawnPosition =
                 new Vector3(
-                    Mathf.Round(Random.Range(AppleSpawnXRange.x, AppleSpawnXRange.y)),
-                    Mathf.Round(Random.Range(AppleSpawnYRange.x, AppleSpawnYRange.y)),
+                    Mathf.Round(Random.Range(appleSpawnXRange.x, appleSpawnXRange.y)),
+                    Mathf.Round(Random.Range(appleSpawnYRange.x, appleSpawnYRange.y)),
                     0
                 );
 
             //check if it is far away enough from anything else
             if (Physics.OverlapBox(randomAppleSpawnPosition, Vector3.one).Length == 0)
 			{
-                Instantiate(ApplePrefab, randomAppleSpawnPosition, Quaternion.identity);
+                Instantiate(applePrefab, randomAppleSpawnPosition, Quaternion.identity);
 			}
         }
 
@@ -140,7 +140,7 @@ namespace SampleSetup_1_ColliderBased
             //check if requested direction is valid
             if (Vector3.Dot(currentDirection, newDirection) > -0.5f)
             {
-                NextPositionIndicator.position = transform.position + newDirection;
+                nextPositionIndicator.position = transform.position + newDirection;
             }
             else
             {
@@ -161,7 +161,7 @@ namespace SampleSetup_1_ColliderBased
             if (other.CompareTag("Pickup"))
 			{
                 Destroy(other.gameObject);
-                Transform newSnakePart = Instantiate(SnakePartPrefab, lastTailPosition, Quaternion.identity);
+                Transform newSnakePart = Instantiate(snakePartPrefab, lastTailPosition, Quaternion.identity);
                 snakeParts.Add(newSnakePart);
 
                 //if you'd want to update any points, do it here ;)

@@ -1,5 +1,7 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 namespace SampleSetup_3_Refactored
 {
@@ -11,71 +13,111 @@ namespace SampleSetup_3_Refactored
     public class GameManager : Singleton<GameManager>
     {
         [Header("Playing field settings")]
-        //Define the playing field size
         [SerializeField] private int width = 40;
         [SerializeField] private int height = 30;
 
         [Header("Game play settings")]
         [Range(0.1f, 1)]
-        [SerializeField] private float stepDelay = 1;
+        [SerializeField] private float _stepDelay = 1;
 
-        public SnakeModel SnakeModel { get; private set; }                  //Defines all the parts of the snake
-        public SnakeFieldModel SnakeFieldModel { get; private set; }        //Keeps track of where everything is
+        [Header("Other")]
+        public UnityEvent onGameInit;
+        public UnityEvent onGameStart;
+        public UnityEvent onGameEnd;
+        public UnityEvent<int> onPointScored;
+
+        public SnakeModel snakeModel { get; private set; }                  //Defines all the parts of the snake
+        public SnakeFieldModel snakeFieldModel { get; private set; }        //Keeps track of where everything is
+        public float stepDelay => _stepDelay;
+
+        public enum GameState { WAITING_TO_START, PLAYING, GAME_OVER }
+        public GameState gameState { get; private set; } = GameState.WAITING_TO_START;
+        
         private IInputProvider inputProvider;                               //Provides direction to the snake
         private WaitForSeconds cachedWFSStepDelay;
+        private SnakeModel.SnakeDirection lastSetDirection;
 
-        public bool GameOver { get; private set; } = false;
+        private int currentScore = 0;
 
         override protected void Awake()
         {
             base.Awake();
 
-            SnakeModel = new SnakeModel(new Vector2Int(width >> 1, height >> 1));
-            SnakeFieldModel = new SnakeFieldModel(width, height);
-            SnakeFieldModel.Store(SnakeModel.HeadPosition, SnakeModel);
+            lastSetDirection = SnakeModel.SnakeDirection.DOWN;
+            snakeModel = new SnakeModel(new Vector2Int(width >> 1, height >> 1), lastSetDirection, 5);
+            snakeFieldModel = new SnakeFieldModel(width, height);
+            snakeFieldModel.Store(snakeModel.headPosition, snakeModel);
 
             inputProvider = GetComponent<IInputProvider>();
-            inputProvider.OnDirectionChanged += InputProvider_OnDirectionChanged;
+            inputProvider.onDirectionChanged += InputProvider_OnDirectionChanged;
 
-            cachedWFSStepDelay = new WaitForSeconds(stepDelay);
+            cachedWFSStepDelay = new WaitForSeconds(_stepDelay);
+
+            onGameInit.Invoke();
         }
 
         private void InputProvider_OnDirectionChanged(SnakeModel.SnakeDirection pNewDirection)
         {
-            SnakeModel.SetNewDirection(pNewDirection);
+            if (snakeModel.IsValidDirection(pNewDirection))
+            {
+                lastSetDirection = pNewDirection;
+            }
         }
 
-        private IEnumerator Start()
+        private IEnumerator PlayGame()
         {
+            gameState = GameState.PLAYING;
+            onGameStart.Invoke();
+
             while (Application.isPlaying)
             {
                 yield return cachedWFSStepDelay;
 
-                //if we are not moving, don't do anything
-                if (SnakeModel.NewDirection == SnakeModel.SnakeDirection.NONE) continue;
-                //will we move outside? If so game over
-                if (!SnakeFieldModel.IsInside(SnakeModel.NextHeadPosition)) break;
-                //did we hit ourselves? If so game over
-                object nextHeadPositionContents = SnakeFieldModel.GetContents(SnakeModel.NextHeadPosition);
-                if (nextHeadPositionContents is SnakeModel)
-                {
-                    Debug.Log("hit snake");
-                    break;
-                }
+                //will we move outside? If so game over...
+                Vector2Int newPosition = snakeModel.GetNextHeadPositionFor(lastSetDirection);
+                if (!snakeFieldModel.IsInside(newPosition)) break;
 
-                //did we eat something? If so grow
+                //will we hit ourselves? If so game over...
+                object nextHeadPositionContents = snakeFieldModel.GetContents(newPosition);
+                if (nextHeadPositionContents is SnakeModel) break;
+
+                //did we eat something? If so grow...
                 bool grow = (nextHeadPositionContents != null);
                 if (nextHeadPositionContents is GameObject pickup) Destroy(pickup);
 
-                //if we didn't grow clear tail position before moving on
-                if (!grow) SnakeFieldModel.Clear(SnakeModel.TailPosition);
-                SnakeModel.Move(grow);
+                //if we didn't grow, clear tail position before moving on
+                if (!grow) snakeFieldModel.Clear(snakeModel.tailPosition);
+                snakeModel.Move(lastSetDirection, grow);
                 //register new head position, will overwrite any pickup contents
-                SnakeFieldModel.Store(SnakeModel.HeadPosition, SnakeModel);
+                snakeFieldModel.Store(snakeModel.headPosition, snakeModel);
+
+                if (grow) {
+                    currentScore++;
+                    onPointScored.Invoke(currentScore);
+                }
             }
 
             Debug.Log("Game over");
-            GameOver = true;
+            gameState = GameState.GAME_OVER;
+            onGameEnd.Invoke();
         }
-    }
+
+		private void Update()
+		{
+			if (Input.GetKeyDown(KeyCode.Space)) 
+			{
+                if(gameState == GameState.WAITING_TO_START)
+				{
+                    StartCoroutine(PlayGame());
+				}
+                else if (gameState == GameState.GAME_OVER)
+				{
+                    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+				}
+
+			}
+		}
+
+
+	}
 }
