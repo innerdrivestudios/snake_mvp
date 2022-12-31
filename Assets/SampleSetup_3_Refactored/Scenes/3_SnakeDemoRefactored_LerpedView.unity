@@ -248,6 +248,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1512553311492527927, guid: 5b7b3ddd53ed0c24184f6c560f3de3c4,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1512553311816394010, guid: 5b7b3ddd53ed0c24184f6c560f3de3c4,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1512553312566721309, guid: 5b7b3ddd53ed0c24184f6c560f3de3c4,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1512553312647588697, guid: 5b7b3ddd53ed0c24184f6c560f3de3c4,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 1512553313274404548, guid: 5b7b3ddd53ed0c24184f6c560f3de3c4,
         type: 3}
       propertyPath: m_RootOrder
@@ -327,6 +347,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Boundaries
+      objectReference: {fileID: 0}
+    - target: {fileID: 1512553313274404549, guid: 5b7b3ddd53ed0c24184f6c560f3de3c4,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5b7b3ddd53ed0c24184f6c560f3de3c4, type: 3}
@@ -490,6 +515,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Grid
+      objectReference: {fileID: 0}
+    - target: {fileID: 8725942597000356251, guid: 74c6fe37d031fde4db032e1e07846a74,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 74c6fe37d031fde4db032e1e07846a74, type: 3}
@@ -658,15 +688,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   snakeBodyHeadPrefab: {fileID: 6997391723875821595, guid: fdc4af7ee54b4f3429c522d161c1aa95,
     type: 3}
-  snakeBodyOddPartPrefab: {fileID: 6997391723875821595, guid: af2f9d5c53748044da3d2a80805fb390,
+  snakeBodyOddPartPrefab: {fileID: 6997391723875821595, guid: 53417e324eee43b48907069cc3c4adf6,
     type: 3}
-  snakeBodyEvenPartPrefab: {fileID: 6997391723875821595, guid: 53417e324eee43b48907069cc3c4adf6,
+  snakeBodyEvenPartPrefab: {fileID: 6997391723875821595, guid: af2f9d5c53748044da3d2a80805fb390,
     type: 3}
   playPulseSpeed: 1
   waitPulseSpeed: 0.1
-  phaseOffsetPerBodyPart: 0.3
-  scaleFactor: 0.2
-  scaleReductionFactor: 0.5
+  phaseOffsetPerBodyPart: 1.57
+  scaleFactor: 0.08
+  scaleReductionFactor: 0.3
 --- !u!114 &2028106621
 MonoBehaviour:
   m_ObjectHideFlags: 0
