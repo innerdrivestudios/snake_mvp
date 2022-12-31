@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -38,7 +37,7 @@ namespace SampleSetup_3_Refactored
             if (!IsValidDirection(pNewDirection)) return false;
             currentDirection = pNewDirection;
 
-            //just add new position in front of snake
+            //just add new position in front of snake, very cheap O(1) operation since this is a linkedlist
             snakeParts.AddFirst(snakeParts.First.Value + snakeDirections[(int)currentDirection]);
 
             //if we grow, we do not remove the last part, otherwise we do

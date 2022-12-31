@@ -2,6 +2,9 @@ using UnityEngine;
 
 namespace SampleSetup_3_Refactored
 {
+	/**
+	 * Converts 2d grid positions to 3d space.
+	 */
 	[DisallowMultipleComponent]
 	public class DefaultV2V3Converter : MonoBehaviour, IV2V3Converter
 	{

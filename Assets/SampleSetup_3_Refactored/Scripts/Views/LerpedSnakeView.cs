@@ -10,18 +10,18 @@ namespace SampleSetup_3_Refactored
 		[SerializeField] private Transform snakeBodyOddPartPrefab;
 		[SerializeField] private Transform snakeBodyEvenPartPrefab;
 
-		[SerializeField] private float playPulseSpeed = 0.2f;
-		[SerializeField] private float waitPulseSpeed = 0.1f;
-		[Range(0, Mathf.PI)] [SerializeField] private float phaseOffsetPerBodyPart = 0.2f;
-		[Range(0, 0.4f)] [SerializeField] private float scaleFactor = 0.2f;
-		[Range(0, 1)][SerializeField] private float scaleReductionFactor = 0.2f;
+		[SerializeField] private float playPulseSpeed = 0.2f;								//body pulsating speed while in play mode
+		[SerializeField] private float waitPulseSpeed = 0.1f;								//body pulasting speed while not in play mode
+		[Range(0, Mathf.PI)] [SerializeField] private float phaseOffsetPerBodyPart = 0.2f;	//sin wave phase offset modifier per body part
+		[Range(0, 0.4f)] [SerializeField] private float scaleFactor = 0.2f;					//varies the original scale from -0.2 .. 0.2 (or whatever is set)
+		[Range(0, 1)][SerializeField] private float scaleReductionFactor = 0.2f;			//each part gets (index/count) * scaleReductionFactor smaller
 
-		private SnakeModel snakeModel;
-		private IV2V3Converter v2V3Converter;
-		private float timeSinceLastUpdate = 0;
+		private SnakeModel snakeModel;														//contains info about all the snake parts
+		private IV2V3Converter v2V3Converter;												//helps converting snakemodel 2d coordinates to 3d space
+		private float timeSinceLastUpdate = 0;												//for lerping, is reset every move
 
-		private List<Transform> snakeBodyParts = new List<Transform>();
-		private List<SnakeBodyPartData> snakeBodyPartData = new List<SnakeBodyPartData>();
+		private List<Transform> snakeBodyParts = new List<Transform>();						//all transform parts matching each snakepart from the snake model
+		private List<SnakeBodyPartData> snakeBodyPartData = new List<SnakeBodyPartData>();	//store start and end data for lerping per body part
 
 		private Vector3 originalScale;
 
@@ -55,6 +55,8 @@ namespace SampleSetup_3_Refactored
 			foreach (Vector2Int snakePart in snakeModel)
 			{
 				bool justInitialized = false;
+				
+				//do we need to add visual parts (and accompanying body part data?)
 				if (snakeBodyParts.Count <= snakePartIndex)
 				{
 					AddBodyPart(snakeBodyParts.Count);
@@ -75,7 +77,7 @@ namespace SampleSetup_3_Refactored
 					bodyPart.localRotation = bodyPartData.currentRotation = bodyPartData.targetRotation;
 					bodyPart.gameObject.SetActive(true);
 				}
-				else
+				else //use the current position and rotation of a bodypart as starting values for the lerp
 				{
 					bodyPartData.currentPosition = bodyPart.localPosition;
 					bodyPartData.currentRotation = bodyPart.localRotation;

@@ -27,6 +27,7 @@ namespace SampleSetup_3_Refactored
         private IEnumerator SpawnCoroutine()
         {
             WaitForSeconds cachedSpawnWFS = new WaitForSeconds(spawnRate);
+            //used to convert our 2d model grid positions to 3d world space positions
             IV2V3Converter v2V3Converter = GetComponent<IV2V3Converter>();
             SnakeFieldModel snakeFieldModel = GameManager.instance.snakeFieldModel;
 

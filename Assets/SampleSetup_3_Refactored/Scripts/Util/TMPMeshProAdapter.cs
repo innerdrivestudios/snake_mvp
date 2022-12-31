@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace SampleSetup_3_Refactored
 {
+	/**
+	 * Allows us to tie a text field to an integer event.
+	 */
 	public class TMPMeshProAdapter : MonoBehaviour
 	{
 		[SerializeField] private TMP_Text label;
