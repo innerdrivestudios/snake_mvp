@@ -33,7 +33,6 @@ namespace SampleSetup_3_Refactored
         public enum GameState { WAITING_TO_START, PLAYING, GAME_OVER }
         public GameState gameState { get; private set; } = GameState.WAITING_TO_START;
         
-        private IInputProvider inputProvider;                               //Provides direction to the snake
         private WaitForSeconds cachedWFSStepDelay;
         private SnakeModel.SnakeDirection lastSetDirection;
 
@@ -48,15 +47,12 @@ namespace SampleSetup_3_Refactored
             snakeFieldModel = new SnakeFieldModel(width, height);
             snakeFieldModel.Store(snakeModel.headPosition, snakeModel);
 
-            inputProvider = GetComponent<IInputProvider>();
-            inputProvider.onDirectionChanged += InputProvider_OnDirectionChanged;
-
             cachedWFSStepDelay = new WaitForSeconds(_stepDelay);
 
             onGameInit.Invoke();
         }
 
-        private void InputProvider_OnDirectionChanged(SnakeModel.SnakeDirection pNewDirection)
+        public void SetNewDirection(SnakeModel.SnakeDirection pNewDirection)
         {
             if (snakeModel.IsValidDirection(pNewDirection))
             {
@@ -102,21 +98,21 @@ namespace SampleSetup_3_Refactored
             onGameEnd.Invoke();
         }
 
-		private void Update()
+        public void StartGame()
 		{
-			if (Input.GetKeyDown(KeyCode.Space)) 
-			{
-                if(gameState == GameState.WAITING_TO_START)
-				{
-                    StartCoroutine(PlayGame());
-				}
-                else if (gameState == GameState.GAME_OVER)
-				{
-                    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-				}
+            if (gameState == GameState.WAITING_TO_START)
+            {
+                StartCoroutine(PlayGame());
+            }
+        }
 
-			}
-		}
+        public void RestartGame()
+		{
+            if (gameState == GameState.GAME_OVER)
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            }
+        }
 
 
 	}
