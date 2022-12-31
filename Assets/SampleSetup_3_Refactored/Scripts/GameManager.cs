@@ -44,8 +44,12 @@ namespace SampleSetup_3_Refactored
 
             lastSetDirection = SnakeModel.SnakeDirection.DOWN;
             snakeModel = new SnakeModel(new Vector2Int(width >> 1, height >> 1), lastSetDirection, 5);
+            
             snakeFieldModel = new SnakeFieldModel(width, height);
-            snakeFieldModel.Store(snakeModel.headPosition, snakeModel);
+            foreach (Vector2Int snakePart in snakeModel)
+            {
+                snakeFieldModel.Store(snakePart, snakeModel);
+            }
 
             cachedWFSStepDelay = new WaitForSeconds(_stepDelay);
 

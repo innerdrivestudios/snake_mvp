@@ -154,26 +154,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &613359596 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8725942597000356251, guid: 74c6fe37d031fde4db032e1e07846a74,
-    type: 3}
-  m_PrefabInstance: {fileID: 8725942597596020343}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &613359601
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 613359596}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd85f7ed66e11774eb29ca7cf048f2b3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  noteText: Visual only.
-  noteType: 0
 --- !u!1 &633924202
 GameObject:
   m_ObjectHideFlags: 0
@@ -390,7 +370,7 @@ MonoBehaviour:
   noteText: 'Normal snake part with some additions:
 
     * The head needs a (kinematic)
-    rigidbody otherwise its collisions will not register
+    rigidbody otherwise it will not register collisions
 
     * The head has a snake
     script, which is basically GameManager etc all in one.
