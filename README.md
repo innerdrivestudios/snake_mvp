@@ -1,1 +1,1 @@
-<img src="https://img.itch.zone/aW1nLzg4MzcxNTUucG5n/original/S%2FXM4o.png"/>
+<img src="https://img.itch.zone/aW1nLzEwOTEyODM2LnBuZw==/original/5b7wQS.png"/>
